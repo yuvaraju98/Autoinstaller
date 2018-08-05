@@ -2,21 +2,25 @@
 import os
 import subprocess
 from tkinter import *
+
 import re
 root = Tk()
-root.geometry("400x700")
-
+root.geometry("400x200")
+global com2
 class auto:
+    
     def cal(self):
         print(self.name.get())
         open("pp.txt","w")
-        
         command="apt-cache search "+self.name.get()+" |column -s'-' >> pp.txt "
         os.system(command)
         fi=open("pp.txt", "r")
         f=fi.readlines()
         i=0
         text=[]
+       
+
+        
         for x in f:
             i+=1
             Mylabel=Label(root,text=str(i)+" "+x).pack()
@@ -24,49 +28,42 @@ class auto:
             self.submitButton= Button(root,text="install"+str(i), command=lambda i=i:self.buttonClick(text[i-1])  )
             self.submitButton.pack()
             
-            
+           
 
     def buttonClick(self,text):
-        print(text)
-       
+        
+        #print(text)
         p=re.split(" - ",text)
-        print("text")
-        print(p[0])
-        com2="apt-get install "+p[0]
-        
-        print(com2)
-        c="apt update"
+        com2="apt-get -y install "+p[0]
+        #print(com2)
         root2=Tk()
-
         root2.geometry("200x200")
-        self.c=StringVar()
-        Mylabel=Label(root2,text="Enter the System password ").pack()
-        ent=Entry(root2,textvariable=self.c)
-        ent.pack()
-        but=Button(root2,text="submit",command=lambda: self.execute(com2,self.c.get()))
-        but.pack()
-        
-        print("Terminal output")
+        self.name1=StringVar(root2)
+        lab6= Label(root2,text="Enter the password")
+        lab6.pack()
+        ent1=Entry(root2,textvariable=self.name1)
+        ent1.pack()
+        but1=Button(root2,text="submit",command=lambda :self.execute(com2,self.name1.get()))#self.execute(self.name1.get()))
+        but1.pack()
         #os.popen("sudo -S %s"%(c), 'w')
         #os.system(com2)
         
-    def execute(self,com,c):
+    def execute(self,c,d):
+        
         #os.popen("sudo -S %s"%(c), 'w').write(c)
-        print("Submitted")
-        
-        print(c)
-        sudo_password =str(c)
+        #print("here it goes",c)
+        #print("Submitted")
+        sudo_password =str(d)
         print(sudo_password)
-        command = com.split()
-        
-
-        p =subprocess.Popen(['sudo', '-S'] + command, stdin=subprocess.PIPE,universal_newlines=True)
-        sudo_prompt = p.communicate(sudo_password + '\n')[1]
+        command = c.split()
+        p =subprocess.Popen(['sudo', '-S']+command, stdin=subprocess.PIPE,universal_newlines=True)
+        sudo_prompt = p.communicate(sudo_password+'\n' )[1]
         
         #a=os.popen("sudo -S %s"%("apt update"), 'w').write('++')
         #print(a,"a")
         print(p)
         print(sudo_prompt)
+        
     
         
     def __init__(self):
